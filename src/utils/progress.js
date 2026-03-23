@@ -1,7 +1,22 @@
 export function computeProgress(goal) {
   switch (goal.type) {
-    case 'binary':
-      return goal.progress?.completed ? 100 : 0
+    case 'binary': {
+      if (goal.progress?.completed) return 100
+      // Auto-compute from sub-goals if configured
+      if (goal.config?.autoProgressFromSubGoals && goal.sub_goals?.length > 0) {
+        const subProgresses = goal.sub_goals.map(sg => {
+          if (sg.type === 'binary') return sg.progress?.completed ? 100 : 0
+          if (sg.type === 'numeric') {
+            const { min = 0, max = 100 } = sg.config || {}
+            const cur = sg.progress?.currentValue ?? min
+            return max === min ? 0 : Math.min(100, ((cur - min) / (max - min)) * 100)
+          }
+          return sg.progress?.rating ?? 0
+        })
+        return subProgresses.reduce((sum, p) => sum + p, 0) / subProgresses.length
+      }
+      return 0
+    }
 
     case 'numeric': {
       const { min = 0, max = 100 } = goal.config || {}
@@ -46,8 +61,18 @@ export function computeProgress(goal) {
 
 export function getProgressLabel(goal) {
   switch (goal.type) {
-    case 'binary':
-      return goal.progress?.completed ? 'Complete!' : 'Not yet'
+    case 'binary': {
+      if (goal.progress?.completed) return 'Complete!'
+      if (goal.config?.autoProgressFromSubGoals && goal.sub_goals?.length > 0) {
+        const done = goal.sub_goals.filter(sg => {
+          if (sg.type === 'binary') return sg.progress?.completed
+          if (sg.type === 'numeric') return (sg.progress?.currentValue ?? 0) >= (sg.config?.max ?? 100)
+          return (sg.progress?.rating ?? 0) >= 100
+        }).length
+        return `${done} / ${goal.sub_goals.length} milestones`
+      }
+      return 'Not yet'
+    }
 
     case 'numeric': {
       const { min = 0, max = 100, unit = '' } = goal.config || {}

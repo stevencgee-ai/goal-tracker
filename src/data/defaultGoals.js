@@ -59,12 +59,77 @@ export const defaultGoals = [
   {
     id: 'muscle-up',
     title: 'Do a Muscle-Up',
-    description: 'Achieve a full muscle-up on the bar',
+    description: '9-month progression program: 5 phases from foundation to clean ring muscle-ups by December 2026',
     type: 'binary',
-    config: {},
+    config: { autoProgressFromSubGoals: true },
     progress: { completed: false },
     steps: [],
-    sub_goals: [],
+    sub_goals: [
+      {
+        id: 'mu-phase1',
+        title: 'Phase 1: Foundation & Rehab (Apr–May)',
+        type: 'numeric',
+        config: { min: 0, max: 10, unit: 'strict pull-ups' },
+        progress: { currentValue: 6 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-phase2',
+        title: 'Phase 2: False Grip Development (Jun–Jul)',
+        type: 'numeric',
+        config: { min: 0, max: 3, unit: 'false-grip ring pull-ups' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-phase3',
+        title: 'Phase 3: High Pull & Transition (Aug–Sep)',
+        type: 'numeric',
+        config: { min: 0, max: 3, unit: 'controlled negative muscle-ups' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-phase4',
+        title: 'Phase 4: First Muscle-Up (Oct–Nov)',
+        type: 'binary',
+        config: {},
+        progress: { completed: false },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-phase5',
+        title: 'Phase 5: Consolidation – 2-3 clean reps (Dec)',
+        type: 'numeric',
+        config: { min: 0, max: 3, unit: 'clean reps per set' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-weighted-pullup',
+        title: 'Weighted pull-up load (lbs added)',
+        type: 'numeric',
+        config: { min: 0, max: 30, unit: 'lbs' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-ring-support',
+        title: 'Ring support hold (seconds)',
+        type: 'numeric',
+        config: { min: 0, max: 45, unit: 'seconds' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'mu-ring-dips',
+        title: 'Ring dips (max reps)',
+        type: 'numeric',
+        config: { min: 0, max: 10, unit: 'reps' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      }
+    ],
     icon: '💪',
     color: '#f87171',
     sort_order: 1
