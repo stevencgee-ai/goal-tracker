@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { useAuth } from './contexts/AuthContext'
 import { useGoals } from './hooks/useGoals'
 import Header from './components/Header'
 import GoalCard from './components/GoalCard'
 import GoalDetail from './components/GoalDetail'
+import LoginScreen from './components/LoginScreen'
 
 export default function App() {
+  const { user, loading: authLoading, supabaseConfigured } = useAuth()
   const {
     goals,
     loading,
@@ -22,6 +25,26 @@ export default function App() {
   const [selectedGoalId, setSelectedGoalId] = useState(null)
   const selectedGoal = goals.find(g => g.id === selectedGoalId)
 
+  // Show loading spinner while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center animate-pulse">
+            <span className="text-xl">🎯</span>
+          </div>
+          <div className="text-text-muted text-xs tracking-[0.2em] uppercase">Loading...</div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show login screen if Supabase is configured but user isn't logged in
+  if (supabaseConfigured && !user) {
+    return <LoginScreen />
+  }
+
+  // Show loading while goals are being fetched
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
