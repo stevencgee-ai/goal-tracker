@@ -25,7 +25,30 @@ export function useGoals() {
           if (error) throw error
 
           if (data && data.length > 0) {
-            setGoals(data)
+            // Merge in any new default sub-goals for existing goals
+            let needsUpdate = false
+            const merged = data.map(g => {
+              const defaultGoal = defaultGoals.find(dg => dg.id === g.id)
+              if (defaultGoal?.sub_goals?.length > 0 && (!g.sub_goals || g.sub_goals.length === 0)) {
+                needsUpdate = true
+                return { ...g, sub_goals: defaultGoal.sub_goals, config: { ...g.config, ...defaultGoal.config } }
+              }
+              return g
+            })
+            if (needsUpdate) {
+              // Persist the merged sub-goals back to Supabase
+              for (const g of merged) {
+                const defaultGoal = defaultGoals.find(dg => dg.id === g.id)
+                if (defaultGoal?.sub_goals?.length > 0 && (!data.find(d => d.id === g.id)?.sub_goals?.length)) {
+                  await supabase
+                    .from('goals')
+                    .update({ sub_goals: g.sub_goals, config: g.config })
+                    .eq('id', g.id)
+                    .eq('user_id', user.id)
+                }
+              }
+            }
+            setGoals(merged)
           } else {
             // Seed default goals for new user
             const seeded = defaultGoals.map(g => ({ ...g, user_id: user.id }))

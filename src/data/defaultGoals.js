@@ -5,11 +5,53 @@ export const defaultGoals = [
     description: 'Achieve a measurably successful rollout of Legora (AI tool) at White & Case',
     type: 'qualitative',
     config: {
-      milestones: ['Pilot launched', 'User training complete', 'Positive feedback received', 'Firm-wide adoption']
+      milestones: ['Junior associate program launched', 'Use cases demoed', 'M&A expertise developed', 'AI-masters engaged', 'Prompt library built'],
+      autoProgressFromSubGoals: true
     },
     progress: { rating: 0 },
     steps: [],
-    sub_goals: [],
+    sub_goals: [
+      {
+        id: 'legora-junior-program',
+        title: 'Implement junior associate learning program',
+        type: 'qualitative',
+        config: {},
+        progress: { rating: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'legora-demo-5-use-cases',
+        title: 'Demo 5 use cases to the section',
+        type: 'numeric',
+        config: { min: 0, max: 5, unit: 'use cases' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'legora-ma-use-cases',
+        title: 'Talk about 3 M&A use cases from a sophisticated angle',
+        type: 'numeric',
+        config: { min: 0, max: 3, unit: 'use cases' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'legora-ai-masters',
+        title: 'Engage all AI-master attorneys (plan + execution)',
+        type: 'qualitative',
+        config: {},
+        progress: { rating: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      },
+      {
+        id: 'legora-50-prompts',
+        title: 'Develop 50 prompts for US tax group',
+        type: 'numeric',
+        config: { min: 0, max: 50, unit: 'prompts' },
+        progress: { currentValue: 0 },
+        createdAt: '2026-01-01T00:00:00.000Z'
+      }
+    ],
     icon: '🚀',
     color: '#60a5fa',
     sort_order: 0

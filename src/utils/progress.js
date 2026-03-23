@@ -22,8 +22,22 @@ export function computeProgress(goal) {
       return Math.min(100, (periodEntries.length / targetCount) * 100)
     }
 
-    case 'qualitative':
+    case 'qualitative': {
+      // Auto-compute from sub-goals if configured
+      if (goal.config?.autoProgressFromSubGoals && goal.sub_goals?.length > 0) {
+        const subProgresses = goal.sub_goals.map(sg => {
+          if (sg.type === 'binary') return sg.progress?.completed ? 100 : 0
+          if (sg.type === 'numeric') {
+            const { min = 0, max = 100 } = sg.config || {}
+            const cur = sg.progress?.currentValue ?? min
+            return max === min ? 0 : Math.min(100, ((cur - min) / (max - min)) * 100)
+          }
+          return sg.progress?.rating ?? 0
+        })
+        return subProgresses.reduce((sum, p) => sum + p, 0) / subProgresses.length
+      }
       return goal.progress?.rating ?? 0
+    }
 
     default:
       return 0
@@ -63,8 +77,17 @@ export function getProgressLabel(goal) {
       return `${periodEntries.length} / ${targetCount} ${unit} this ${period}`
     }
 
-    case 'qualitative':
+    case 'qualitative': {
+      if (goal.config?.autoProgressFromSubGoals && goal.sub_goals?.length > 0) {
+        const done = goal.sub_goals.filter(sg => {
+          if (sg.type === 'binary') return sg.progress?.completed
+          if (sg.type === 'numeric') return (sg.progress?.currentValue ?? 0) >= (sg.config?.max ?? 100)
+          return (sg.progress?.rating ?? 0) >= 100
+        }).length
+        return `${done} / ${goal.sub_goals.length} sub-goals`
+      }
       return `${Math.round(goal.progress?.rating ?? 0)}%`
+    }
 
     default:
       return ''
